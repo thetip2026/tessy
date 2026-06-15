@@ -1,0 +1,42 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<section class="header-row">
+  <div>
+    <h2>Order {{ order.public_id }}</h2>
+    <p class="muted">Payment monitoring and fulfilment controls.</p>
+  </div>
+  <a class="btn btn-secondary" href="/admin/ui">Back</a>
+</section>
+<section class="detail-grid">
+  <div class="panel">
+    <h3>Order details</h3>
+    <dl class="meta-list">
+      <div><dt>Status</dt><dd><span class="badge">{{ order.status }}</span></dd></div>
+      <div><dt>Payment status</dt><dd>{{ order.provider_payment_status or '-' }}</dd></div>
+      <div><dt>Coin</dt><dd>{{ order.coin or '-' }}</dd></div>
+      <div><dt>Coin amount</dt><dd>{{ order.coin_amount or '-' }}</dd></div>
+      <div><dt>Payment address</dt><dd class="wrap">{{ order.payment_address or '-' }}</dd></div>
+      <div><dt>Delivery method</dt><dd>{{ order.delivery_method or '-' }}</dd></div>
+      <div><dt>Delivery address</dt><dd class="wrap">{{ order.delivery_address or '-' }}</dd></div>
+      <div><dt>Total</dt><dd>£{{ '%.2f'|format(order.fiat_total + (order.shipping_cost or 0)) }}</dd></div>
+    </dl>
+  </div>
+  <div class="panel">
+    <h3>Actions</h3>
+    <form method="post" action="/admin/ui/orders/{{ order.public_id }}/dispatch">
+      <button class="btn btn-primary" type="submit">Mark dispatched and notify buyer</button>
+    </form>
+  </div>
+</section>
+<section class="panel">
+  <h3>Payment events</h3>
+  <table>
+    <thead><tr><th>Provider</th><th>Status</th><th>Created</th></tr></thead>
+    <tbody>
+      {% for event in events %}
+      <tr><td>{{ event.provider }}</td><td>{{ event.external_status }}</td><td>{{ event.created_at }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

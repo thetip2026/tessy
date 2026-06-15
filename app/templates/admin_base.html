@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title or 'Admin Panel' }}</title>
+  <link rel="stylesheet" href="/static/admin.css" />
+  <script>
+    (function() {
+      const root = document.documentElement;
+      const stored = localStorage.getItem('admin_theme');
+      if (stored === 'light' || stored === 'dark') root.setAttribute('data-theme', stored);
+      document.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-theme-toggle]');
+        if (!btn) return;
+        const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem('admin_theme', next);
+      });
+    })();
+  </script>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand-row">
+        <div class="logo">₿</div>
+        <button type="button" class="icon-btn" data-theme-toggle aria-label="Toggle theme">◐</button>
+      </div>
+      <div>
+        <h1>Shop Admin</h1>
+        <p class="muted">Orders, payments, dispatch</p>
+      </div>
+      <nav class="nav">
+        <a href="/admin/ui">Orders</a>
+      </nav>
+      <form method="post" action="/admin/logout">
+        <button class="btn btn-secondary full" type="submit">Log out</button>
+      </form>
+    </aside>
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>
